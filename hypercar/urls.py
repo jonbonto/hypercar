@@ -20,5 +20,6 @@ from tickets.views import WelcomeView, menu, GetTicketView
 urlpatterns = [
     path('welcome/', WelcomeView.as_view()),
     path('menu', menu),
-    path('get_ticket/<str:service_type>', GetTicketView.as_view())
+    path('get_ticket/<str:service_type>', GetTicketView.as_view()),
+    path('processing/', GetTicketView.Process.as_view())
 ]
