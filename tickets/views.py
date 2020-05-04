@@ -1,6 +1,6 @@
 from django.views import View
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import render, redirect
+from django.http import Http404, HttpResponseRedirect
 
 
 class WelcomeView(View):
@@ -11,8 +11,9 @@ class WelcomeView(View):
 def menu(request):
     return render(request, 'menu.html')
 
+
 class GetTicketView(View):
-    const = dict({'ticket_number': 0})
+    const = dict({'ticket_number': 0, 'next_number': -1})
     change_oil_q = []
     inflate_tires_q = []
     diagnostic_q = []
@@ -44,4 +45,21 @@ class GetTicketView(View):
                 'change_oil_number': len(GetTicketView.change_oil_q),
                 'inflate_tires_number': len(GetTicketView.inflate_tires_q),
                 'diagnostic_number': len(GetTicketView.diagnostic_q),
+            })
+
+        def post(self, request):
+            if len(GetTicketView.change_oil_q):
+                GetTicketView.const['next_number'] = GetTicketView.change_oil_q.pop(0)
+            elif len(GetTicketView.inflate_tires_q):
+                GetTicketView.const['next_number'] = GetTicketView.inflate_tires_q.pop(0)
+            elif len(GetTicketView.diagnostic_q):
+                GetTicketView.const['next_number'] = GetTicketView.diagnostic_q.pop(0)
+            else:
+                GetTicketView.const['next_number'] = -1
+            return redirect('/next')
+
+    class Next(View):
+        def get(self, request, *args):
+            return render(request, 'next.html', {
+                'number_of_ticket': GetTicketView.const['next_number']
             })
