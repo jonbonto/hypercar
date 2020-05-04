@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from tickets.views import WelcomeView, menu
+from tickets.views import WelcomeView, menu, GetTicketView
 
 
 urlpatterns = [
     path('welcome/', WelcomeView.as_view()),
-    path('menu', menu)
+    path('menu', menu),
+    path('get_ticket/<str:service_type>', GetTicketView.as_view())
 ]
